@@ -1,0 +1,6 @@
+{
+    "require": {
+        "hardcastle/xrpl_php": "^0.9.3",
+        "xrpl/xumm-sdk-php": "^1.2"
+    }
+}
