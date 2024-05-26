@@ -4,7 +4,6 @@ if (!class_exists('Rest_api'))
     class Rest_api {
         public function __construct() {
             add_action('rest_api_init',array($this,'register_rest_api'));
-            error_log("uspio");
         }
         public function register_rest_api()
         {
