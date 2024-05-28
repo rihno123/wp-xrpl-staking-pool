@@ -5,7 +5,8 @@ Setup:
           wallet's secret key, if "Enable testing" is checked, than payout will happen in matter
           of seconds, otherwise you need to wait time you set up.
           
-          ![1](https://github.com/rihno123/wp-xrpl-staking-pool/assets/122835110/d22370c0-3dd8-4910-a9b3-587d8fc918df)
+        ![1](https://github.com/rihno123/wp-xrpl-staking-pool/assets/122835110/3a8b7147-d8c6-4b51-b7a9-a87eefc81eb2)
+
 
        
        2. Create a Form in elementor and set id to "Form"
