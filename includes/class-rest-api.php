@@ -1,8 +1,9 @@
 <?php
-if (!class_exists('Rest_api'))
-{
     class Rest_api {
+
+        private $xaman_handler;
         public function __construct() {
+            $this->xaman_handler = new Xaman_handler();
             add_action('rest_api_init',array($this,'register_rest_api'));
         }
         public function register_rest_api()
@@ -14,7 +15,6 @@ if (!class_exists('Rest_api'))
                     'methods' => 'GET, POST',
                     'callback' => array($this,'handle_rest_api_reqs'),
                     'permission_callback' => '__return_true'
-
                 )
             );
 
@@ -22,16 +22,25 @@ if (!class_exists('Rest_api'))
 
         public function handle_rest_api_reqs($request)
         {
-            global $stakePlugin;
-            $headers = $request->get_headers();
-            $action = $headers['action'];
-            switch ($action[0]) {
+            $xaman_handler = $this->xaman_handler;
+            
+            $rawData = file_get_contents("php://input");
+            $data = json_decode($rawData, true);
+            $action = $data['action'] ?? 'Not provided';
+
+
+            if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+                echo json_encode(["error" => "Invalid JSON"]);
+                exit;
+            }
+
+            switch ($action) {
                 case 'payment_request':
 
                     try {
-                    $stakeAmmount = (int)$headers['stakeammount'][0];
-                    error_log($stakeAmmount);
-                    $stakePlugin->xaman_payment_req($stakeAmmount);
+                    $stakeAmount = (int)$data['stakeAmount'] ?? 'Not provided';
+                    error_log(json_encode($data));
+                    $xaman_handler->xaman_payment_req($stakeAmount);
 
                     } catch (Exception $e) {
                         $error_message = $e->getMessage();
@@ -43,12 +52,11 @@ if (!class_exists('Rest_api'))
                 case 'checking_transaction':
 
                     try {
-                        $stakeAmmount = (int)$headers['stakeammount'][0];
-                        $stakepercentage = (int)$headers['stakepercentage'][0];
-                        $duration = (int)$headers['duration'][0];
-                        error_log("stakeAmmount: ".$stakeAmmount);
-                        error_log("stake: ". $stakeAmmount);
-                        $uuid = $headers['uuid'][0];
+                        $stakeAmount = (int)$data['stakeAmount'] ?? 'Not provided';
+                        $stakepercentage = (int)$data['stakePercentage'] ?? 'Not provided';
+                        $durationInMonths = (int)$data['durationInMonths'] ?? 'Not provided';
+                        $uuid = $data['uuid'];
+
                         $client = new \GuzzleHttp\Client();
                         $url = "https://xumm.app/api/v1/platform/payload/" . $uuid;
                         $response = $client->request('GET', $url, [
@@ -58,10 +66,10 @@ if (!class_exists('Rest_api'))
                                 'accept' => 'application/json',
                             ],
                         ]);
+
                     $body = json_decode($response->getBody(), true);
                     $staker = $body['response']['account'];
-                    
-                    $stakePlugin->schedule_stk_payout($duration,$stakeAmmount,$staker,$stakepercentage);
+                    $xaman_handler->schedule_stake_payout($durationInMonths,$stakeAmount,$staker,$stakepercentage);
                     return wp_send_json_success($body);
             
             
@@ -77,5 +85,6 @@ if (!class_exists('Rest_api'))
 
         }
     }
-}
-new Rest_api();
+
+    new Rest_api();
+

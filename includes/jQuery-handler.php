@@ -9,10 +9,11 @@ function jQuery_Handler()
         var nonce = '<?php echo wp_create_nonce("wp_rest"); ?>'
 
         jQuery('#Form').on("submit", function (event) {
+
             event.preventDefault(); 
             var formElement = event.target; 
             var formData = new FormData(formElement); 
-            var stakeAmmount = formData.get('form_fields[field1]');
+            var stakeAmount = formData.get('form_fields[amount]');
             var stakePercentagedata = formData.get('form_fields[period]');
             var matches = stakePercentagedata.match(/(\d+)%/);
             var stakePercentage = 0;
@@ -33,8 +34,13 @@ function jQuery_Handler()
                 return;
             }
 
-            var form = { "key": "value" };
+            var form = {
+                "action": "payment_request",
+                "stakeAmount": stakeAmount
+            };
+
             form = JSON.stringify(form);
+            
             jQuery.ajax({
                 method: 'POST',
                 url: '<?php echo get_rest_url(null, "staking-pool/stake"); ?>',
@@ -42,11 +48,7 @@ function jQuery_Handler()
                 headers: {
                     'X-WP-Nonce': nonce, 
                     "accept": "application/json", 
-                    'action': 'payment_request',
-                    "Access-Control-Allow-Origin": "*",
-                    'stakeammount': stakeAmmount,
-                    'stakepercentage': stakePercentage,
-                    'duration': duration
+                    "Access-Control-Allow-Origin": "*"
                 },
                 data: form,
                 dataType: "json"
@@ -56,7 +58,8 @@ function jQuery_Handler()
                 if (!popup) {
                     alert('Popup blocked by browser');
                 }
-                Websocket_handler(duration,stakePercentage,stakeAmmount,res.websocket, res.uuid);
+                Websocket_handler(duration,stakePercentage,stakeAmount,res.websocket, res.uuid);
+
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(textStatus, errorThrown);
             });
@@ -68,11 +71,12 @@ function jQuery_Handler()
 
 <?php
 }
-function Xaman_handler()
+function Transaction_handler()
 {
     ?>
     <script>   
-    function Websocket_handler(duration,stakePercentage,stakeAmmount,websocket, uuid){
+    function Websocket_handler(duration,stakePercentage,stakeAmount,websocket, uuid){
+
         socket = new WebSocket(websocket);
 
         socket.onmessage = function (event) {
@@ -82,7 +86,7 @@ function Xaman_handler()
                     socket.close();
             } else if (data.signed) {
                     socket.close();
-                    Checking_transaction(duration,stakePercentage,stakeAmmount,uuid);
+                    Checking_transaction(duration,stakePercentage,stakeAmount,uuid);
             } else if (data.signed != undefined && !data.signed) {
                     socket.close();
             } 
@@ -92,10 +96,16 @@ function Xaman_handler()
             };
     }
 
-    function Checking_transaction(duration,stakePercentage,stakeAmmount,uuid)
+    function Checking_transaction(duration,stakePercentage,stakeAmount,uuid)
     {
         var nonce = '<?php echo wp_create_nonce("wp_rest"); ?>'
-        var form = { "key": "value" };
+        var form = {
+                    'action': 'checking_transaction',
+                    "uuid": uuid,
+                    "stakeAmount": stakeAmount,
+                    'stakePercentage': stakePercentage,
+                    'durationInMonths': duration
+            };
         form = JSON.stringify(form);
 
         jQuery.ajax({
@@ -105,12 +115,7 @@ function Xaman_handler()
                 headers: {
                     'X-WP-Nonce': nonce, 
                     "accept": "application/json", 
-                    "uuid": uuid,
-                    'action': 'checking_transaction',
-                    "Access-Control-Allow-Origin": "*", 
-                    "stakeammount": stakeAmmount,
-                    'stakepercentage': stakePercentage,
-                    'duration': duration
+                    "Access-Control-Allow-Origin": "*"
                 },
                 data: form,
                 dataType: "json"
@@ -130,4 +135,4 @@ function Xaman_handler()
 }
 
 add_action('wp_footer', 'jQuery_Handler');
-add_action('wp_footer', 'Xaman_handler');
+add_action('wp_footer', 'Transaction_handler');
