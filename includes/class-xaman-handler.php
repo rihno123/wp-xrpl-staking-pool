@@ -7,9 +7,8 @@ use Xrpl\XummSdkPhp\XummSdk;
 class Xaman_handler {
 
     private $xummSdk;
-    
+
     public function __construct() {
-        error_log("1");
         add_action('stake_payment', array($this,'sending_tokens'), 10, 3);  
         $this->xummSdk = new XummSdk(get_option('XUMM_KEY'), get_option('XUMM_SECRET'));
     }
