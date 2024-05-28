@@ -49,7 +49,8 @@ class Xaman_handler {
     public function schedule_stake_payout($duration, $amount, $staker, $stake) {     
         if(get_option("enable_test"))
         {
-            wp_schedule_single_event(time() + $duration, 'stake_payment', [$amount, $staker, $stake]);
+            $test_timeframe = 5;
+            wp_schedule_single_event(time() + $test_timeframe, 'stake_payment', [$amount, $staker, $stake]);
         }
         else 
         {
