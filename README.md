@@ -3,7 +3,9 @@ Setup:
        1. First of all, you need to configure the settings, you need to enter your own Xaman api key 
           and api secret key, token name and token's issuer account, furthermore you need staking
           wallet's secret key, if "Enable testing" is checked, than payout will happen in matter
-          of seconds, otherwise you need to wait time you set up.![1](https://github.com/rihno123/wp-xrpl-staking-pool/assets/122835110/d22370c0-3dd8-4910-a9b3-587d8fc918df)
+          of seconds, otherwise you need to wait time you set up.
+          
+          ![1](https://github.com/rihno123/wp-xrpl-staking-pool/assets/122835110/d22370c0-3dd8-4910-a9b3-587d8fc918df)
 
        
        2. Create a Form in elementor and set id to "Form"
