@@ -15,7 +15,10 @@ class Xaman_handler {
 
     public function __construct() {
         add_action('stake_payment', array($this,'sending_tokens'), 10, 3);  
-        $this->xummSdk = new XummSdk(get_option('XUMM_KEY'), get_option('XUMM_SECRET'));
+        if(get_option('XUMM_KEY') && get_option('XUMM_SECRET'))
+        {
+            $this->xummSdk = new XummSdk(get_option('XUMM_KEY'), get_option('XUMM_SECRET'));
+        }
     }
 
     public function xaman_payment_req($stakeAmount) {
