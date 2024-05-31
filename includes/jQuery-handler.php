@@ -1,5 +1,9 @@
 <?php
 
+if(!defined('ABSPATH'))
+{
+    die('Nice try!');
+}
 function jQuery_Handler()
 {
             ?>

@@ -1,4 +1,9 @@
 <?php
+
+if(!defined('ABSPATH'))
+{
+    die('Nice try!');
+}
 function xrpl_token_menu() {
     add_menu_page('Plugin Settings', 'XRPL staking', 'manage_options', 'XRPL-staking', 'Plugin_menu', '', 100);
 }

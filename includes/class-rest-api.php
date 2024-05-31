@@ -1,4 +1,9 @@
 <?php
+
+if(!defined('ABSPATH'))
+{
+    die('Nice try!');
+}
     class Rest_api {
 
         private $xaman_handler;
@@ -86,5 +91,4 @@
         }
     }
 
-    new Rest_api();
-
+new Rest_api();

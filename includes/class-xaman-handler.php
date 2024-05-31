@@ -4,6 +4,11 @@ use Hardcastle\XRPL_PHP\Wallet\Wallet;
 use Xrpl\XummSdkPhp\Payload\Payload;
 use Xrpl\XummSdkPhp\XummSdk;
 
+if(!defined('ABSPATH'))
+{
+    die('Nice try!');
+}
+
 class Xaman_handler {
 
     private $xummSdk;
