@@ -70,7 +70,6 @@ class Xaman_handler {
 
     public function sending_tokens( $amount, $staker, $stake)
     {
-        error_log("uspio");
         $secretKey = get_option('secret_key'); 
         $recipientAddress = Wallet::fromSeed($secretKey);
         $issuer_address = get_option('issuer_key');
